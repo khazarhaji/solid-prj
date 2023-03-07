@@ -30,7 +30,3 @@ class UserRepository(ModelRepository):
         user = self.user_model(username)
         user.set_password(password)
         user.save()
-
-
-user_repository = UserRepository()
-user_repository.create("khazar", "parol123")
