@@ -11,11 +11,9 @@ class DataService(ABC):
 
 class FileDataService(DataService):
 
-    def __init__(self, path_to_save):
-        self.path_to_save = path_to_save
-
-    def save(self):
-        user = vars(self)
+    def save(self, obj):
+        user = vars(obj)
         json_object = json.dumps(user, indent=4)
         with open("users.json", "w") as outfile:
             outfile.write(json_object)
+            outfile.close()

@@ -1,44 +1,24 @@
 from abc import ABC, abstractmethod
-from hashlib import md5
-import uuid
-from services import FileDataService
+from utils import IDGenerator, PasswordManager
+from services import DataService
 
 
-class PasswordManager(ABC):
+class User:
 
-    @abstractmethod
-    def set_password(self, password):
-        pass
-
-    @abstractmethod
-    def check_password(self, password):
-        pass
-
-
-class IDGenerator(ABC):
-
-    @abstractmethod
-    def generate_id(self):
-        pass
-
-
-class UUID4Generator(IDGenerator):
-
-    def generate_id(self):
-        return str(uuid.uuid4())
-
-
-class User(PasswordManager, UUID4Generator, FileDataService):
-
-    def __init__(self, username) -> None:
-        self.id = self.generate_id()
+    def __init__(self, username):
         self.username = username
 
     def __str__(self):
         return self.username
 
-    def set_password(self, password):
-        self.password = md5(password.encode()).hexdigest()
+    def generate_id(self, generator: IDGenerator):
+        generator = generator()
+        self.id = generator.generate_id()
 
-    def check_password(self, password):
-        return md5(password.encode()).hexdigest() == self.password
+    def set_password(self, password, password_manager: PasswordManager):
+        password_manager = password_manager()
+        self.password = password_manager.set_password(password)
+
+    def save(self, save_service: DataService):
+        save_service = save_service()
+        save_service.save(self)

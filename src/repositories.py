@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 from models import User
+from utils import UUID4Generator, UserPasswordManager
+from services import FileDataService
 
 
 class ModelRepository(ABC):
@@ -28,5 +30,6 @@ class UserRepository(ModelRepository):
 
     def create(self, username, password):
         user = self.user_model(username)
-        user.set_password(password)
-        user.save()
+        user.generate_id(UUID4Generator)
+        user.set_password(password, UserPasswordManager)
+        user.save(FileDataService)
